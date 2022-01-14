@@ -1,0 +1,21 @@
+--- sys.c	2021-11-25 13:45:20.380006326 +0000
++++ sys2.c	2021-11-25 13:45:20.363339659 +0000
+@@ -263,6 +263,18 @@
+ out:
+ 	return error;
+ }
++SYSCALL_DEFINE4(kernel_2d_memcpy,float __user *,src ,float __user *, dst,int, rows, int, cols){
++	int size = sizeof(float)*rows*cols;
++	float *ptr = (float *)kmalloc(size, GFP_KERNEL);
++	
++	if (__copy_from_user(ptr, src, size)) {
++		return -EFAULT;
++	}
++	if (__copy_to_user(dst, ptr, size)) {
++		return -EFAULT;
++	}
++	return 0;
++}
+ 
+ /*
+  * Ugh. To avoid negative return values, "getpriority()" will
